@@ -13,8 +13,6 @@ The system is split into two distinct sections to isolate high-frequency digital
 1. **Digital Subsystem:** Reads MP3 files from a microSD card, decodes them in software, streams PCM audio over I2S to a dedicated DAC, and processes dual ultrasonic sensor inputs to adjust volume and control the output mute relay.
 2. **Analog Subsystem:** Takes line-level analog audio, performs active frequency shaping (bass/treble shelves), boosts the voltage signal via a small-signal pre-driver, and drives a low-impedance speaker load through a complementary Class-AB output stage.
 
-![System Block Diagram](images/block_diagram.png)
-
 ```mermaid
 graph TD
     %% Styling Definitions
@@ -59,6 +57,15 @@ Unlike passive RC filters which introduce significant insertion loss (often ~20 
 - **Treble Control:** Utilizes a high-pass shelving filter that boosts or cuts frequencies above $3\text{ kHz}$ by up to $\pm15\text{ dB}$.
 - **Unity Mid-Point:** When both knobs are at center, the circuit acts as a flat-response buffer with unity gain.
 
+*NE5532 Active Tone Control Board Layout:*
+![XH-M164 NE5532 Active Tone Control Board](images/tone_board_module.png)
+
+*Datasheet Active Tone Control Response curves:*
+![Bass and Treble Tone Control Response Curves](images/tone_response_curves.png)
+
+*Active Tone Control Schematic:*
+![Active Tone Control Schematic](images/schematic.png)
+
 ### 2. Pre-Driver & Voltage Amplification Stage (BC109BP)
 The output of the tone control is buffered and amplified by a **BC109BP** NPN transistor configured as a common-emitter pre-driver. This stage provides the necessary voltage gain (VAS) to drive the subsequent output stage and lowers the source impedance.
 
@@ -73,6 +80,9 @@ Power delivery is handled by a complementary push-pull pair:
 - **BD139 (NPN):** Sources current to the load during the positive half-cycles of the audio waveform.
 - **BD140 (PNP):** Sinks current from the load during the negative half-cycles.
 - **Emitter Resistors ($R_9, R_10$):** $10\ \Omega$ power resistors stabilize the output transistors' operating points, enforce current sharing, and provide local negative feedback to minimize distortion.
+
+*Output Stage Configuration Comparison:*
+![Class-A and Class-B Output Stage Comparison](images/amplifier_classes.png)
 
 ### 5. Output AC-Coupling & Grounding
 - **AC Coupling:** Since the power amplifier runs on a single $+15\text{V}$ supply rail, the output node sits at a DC offset of $\sim7.5\text{V}$ (half-supply). A large $2200\ \mu\text{F}$ capacitor ($C_5$) blocks this DC offset from the speaker, preventing damage while letting AC audio frequencies down to $20\text{ Hz}$ pass.
@@ -117,8 +127,16 @@ analog-audio-amplifier/
 │   └── README.md               # Folder placeholder for report.pdf
 │
 ├── images/
-│   ├── baxandall_response.png  # Python-simulated tone control response curves
-│   └── README.md               # Folder placeholder for schematics and build photos
+│   ├── baxandall_response.png          # Python-simulated tone control response curves
+│   ├── tone_board_module.png           # Annotated PCB layout of the XH-M164 board
+│   ├── tone_response_curves.png        # Datasheet shelving response curves
+│   ├── schematic.png                   # Active Baxandall tone control schematic
+│   ├── amplifier_classes.png           # Theoretical Class-A/Class-B stage diagram
+│   ├── multisim.png                    # Power stage Multisim schematic
+│   ├── multisim_waveform.png           # Multisim simulation oscilloscope waveform
+│   ├── final_build.png                 # Photo of full physical breadboard prototype
+│   ├── oscilloscope_waveform_70hz.png  # Oscilloscope measurement of 70Hz output
+│   └── tone_board_wiring.png           # Close-up photo of physical wiring
 │
 ├── hardware/
 │   └── bom.md                  # Comprehensive Bill of Materials
@@ -157,17 +175,26 @@ The Multisim project simulates the discrete Class-AB stage:
 * Verifies biasing voltages at the output transistor bases to confirm they remain between $1.4\text{V}$ and $1.8\text{V}$ to prevent crossover distortion.
 * Performs transient analysis to check for clipping limits and signal symmetry when driving an $8\ \Omega$ load.
 
-*Multisim Power Stage Simulation:*
+*Multisim Power Stage Simulation Schematic:*
 ![Power Stage Multisim Simulation](images/multisim.png)
+
+*Simulated Input and Output Waveforms:*
+![Simulated Input and Output Waveforms](images/multisim_waveform.png)
 
 ## 📸 Physical Hardware Implementation
 
 The system was physically assembled and tested in a laboratory prototyping environment. Below is the breadboard layout showing the interconnected ESP32 controller, digital sensors, NE5532 preamp, and discrete Class-AB stage:
 
-![Physical Breadboard Prototype Build](images/final_build.jpg)
+![Physical Breadboard Prototype Build](images/final_build.png)
+
+*NE5532 Tone Board & Power Stage Wiring (Close-Up):*
+![NE5532 Tone Board & Power Stage Wiring](images/tone_board_wiring.png)
 
 ### Performance & Waveform Verification
 The amplifier's frequency response was verified on an oscilloscope using test signal sweeps. A clean, undistorted output sine wave was captured at an input frequency of $70\text{ Hz}$, showing that the $V_{BE}$ multiplier active bias network effectively eliminates crossover distortion under load.
+
+*Oscilloscope Waveform Measurement (70 Hz Input):*
+![Analog Oscilloscope 70Hz Output Signal Waveform](images/oscilloscope_waveform_70hz.png)
 
 ---
 
