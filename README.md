@@ -13,6 +13,8 @@ The system is split into two distinct sections to isolate high-frequency digital
 1. **Digital Subsystem:** Reads MP3 files from a microSD card, decodes them in software, streams PCM audio over I2S to a dedicated DAC, and processes dual ultrasonic sensor inputs to adjust volume and control the output mute relay.
 2. **Analog Subsystem:** Takes line-level analog audio, performs active frequency shaping (bass/treble shelves), boosts the voltage signal via a small-signal pre-driver, and drives a low-impedance speaker load through a complementary Class-AB output stage.
 
+![System Block Diagram](images/block_diagram.png)
+
 ```mermaid
 graph TD
     %% Styling Definitions
@@ -154,6 +156,18 @@ The script in `simulations/matlab/signal_fft_analysis.m` takes a multi-frequency
 The Multisim project simulates the discrete Class-AB stage:
 * Verifies biasing voltages at the output transistor bases to confirm they remain between $1.4\text{V}$ and $1.8\text{V}$ to prevent crossover distortion.
 * Performs transient analysis to check for clipping limits and signal symmetry when driving an $8\ \Omega$ load.
+
+*Multisim Power Stage Simulation:*
+![Power Stage Multisim Simulation](images/multisim.png)
+
+## 📸 Physical Hardware Implementation
+
+The system was physically assembled and tested in a laboratory prototyping environment. Below is the breadboard layout showing the interconnected ESP32 controller, digital sensors, NE5532 preamp, and discrete Class-AB stage:
+
+![Physical Breadboard Prototype Build](images/final_build.jpg)
+
+### Performance & Waveform Verification
+The amplifier's frequency response was verified on an oscilloscope using test signal sweeps. A clean, undistorted output sine wave was captured at an input frequency of $70\text{ Hz}$, showing that the $V_{BE}$ multiplier active bias network effectively eliminates crossover distortion under load.
 
 ---
 
