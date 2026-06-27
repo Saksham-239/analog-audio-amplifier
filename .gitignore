@@ -1,0 +1,31 @@
+# PlatformIO
+.pio
+.pioenvs
+.piolibdeps
+.clang_complete
+.gcc-flags.json
+.vscode
+
+# Arduino Build files
+build/
+*~
+*.swp
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+
+# MATLAB
+*.asv
+*.fig
+
+# Operating System Files
+Thumbs.db
+.DS_Store
+desktop.ini
