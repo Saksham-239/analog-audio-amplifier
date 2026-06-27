@@ -123,9 +123,6 @@ analog-audio-amplifier/
 ├── LICENSE                     # MIT License
 ├── .gitignore                  # PlatformIO/Arduino/Python build ignore list
 │
-├── docs/
-│   └── README.md               # Folder placeholder for report.pdf
-│
 ├── images/
 │   ├── baxandall_response.png          # Python-simulated tone control response curves
 │   ├── tone_board_module.png           # Annotated PCB layout of the XH-M164 board
