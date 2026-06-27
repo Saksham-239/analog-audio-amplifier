@@ -36,7 +36,7 @@ graph TD
 
     %% Control Loops
     ESP32 -->|GPIO Select| Relay["Mute Relay Module"]
-    Power -->|AC-Coupled Audio (C5)| Relay
+    Power -->|"AC-Coupled Audio (C5)"| Relay
     Relay -->|Muted/Unmuted Audio| Speaker["8 Ω Loudspeaker"]
 
     %% Class Application
